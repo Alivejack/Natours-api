@@ -79,6 +79,8 @@ exports.updateTour = async (req, res) => {
       runValidators: true,
     });
 
+    console.log(tour);
+
     res.status(200).json({
       status: 'success',
       data: {
