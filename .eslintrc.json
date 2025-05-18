@@ -15,7 +15,8 @@
     "class-methods-use-this": "off",
     "prefer-destructuring": ["error", { "object": true, "array": false }],
     "no-unused-vars": ["error", { "argsIgnorePattern": "req|res|next|val" }],
-    "node/no-unsupported-features/es-syntax": "off"
+    "node/no-unsupported-features/es-syntax": "off",
+    "endOfLine": "crlf"
   },
   "settings": {
     "node": {
@@ -23,3 +24,4 @@
     }
   }
 }
+
