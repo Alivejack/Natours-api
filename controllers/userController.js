@@ -18,10 +18,14 @@ exports.createUser = (req, res) => {
   });
 };
 
-exports.getUser = (req, res) => {
+exports.getUser = async (req, res) => {
+  const user = await User.findById(req.params.id);
+
   res.status(500).json({
     status: 'error',
-    message: 'This route is not yet defined!',
+    data: {
+      user,
+    },
   });
 };
 
