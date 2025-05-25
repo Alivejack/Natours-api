@@ -1,7 +1,13 @@
-exports.getAllUsers = (req, res) => {
-  res.status(500).json({
+const User = require('../models/userModel');
+
+exports.getAllUsers = async (req, res) => {
+  const users = await User.find();
+
+  res.status(200).json({
     status: 'error',
-    message: 'This route is not yet defined!',
+    data: {
+      users,
+    },
   });
 };
 
@@ -32,3 +38,4 @@ exports.deleteUser = (req, res) => {
     message: 'This route is not yet defined!',
   });
 };
+
