@@ -39,7 +39,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 1) check if email and password exist
   if (!email || !password) {
-    return next(new AppError('Please provide email and password !'));
+    return next(new AppError('Please provide email and password !', 400));
   }
 
   // 2) check if user exist && password is correct
@@ -79,7 +79,10 @@ exports.protect = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(decoded.id);
   if (!currentUser) {
     return next(
-      new AppError('The user belonging to this token does no longer exist.'),
+      new AppError(
+        'The user belonging to this token does no longer exist.',
+        401,
+      ),
     );
   }
 
