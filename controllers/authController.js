@@ -192,3 +192,31 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
     token,
   });
 });
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) Get user from the collection
+  const { currentPassword, newPassword, newPasswordConfirm } = req.body;
+  const user = await User.findById(req.user.id).select('+password');
+  if (!user) {
+    return next(new AppError('you are not loged in !'));
+  }
+
+  // 2) Check if Posted currnet password is correct
+  if (!(await user.correctPassword(currentPassword, user.password))) {
+    return next(new AppError('Your current password is wrong', 401));
+  }
+
+  // 3) If so, update password
+  user.password = newPassword;
+  user.passwordConfirm = newPasswordConfirm;
+  await user.save();
+  // User.findByIdAndUpdate will NOT work as intended !
+
+  // 4) Log user in, send JWT
+  const token = signToken(user._id);
+
+  res.status(200).json({
+    status: 'success',
+    token,
+  });
+});
