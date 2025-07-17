@@ -12,6 +12,22 @@ const signToken = (id) => {
   });
 };
 
+const createSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    token,
+    date: {
+      user: {
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    },
+  });
+};
+
 exports.signup = catchAsync(async (req, res, next) => {
   // this is the nonsecure version of getting data from user
   // const newUser = await User.create(req.body);
@@ -26,19 +42,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     role: req.body.role, // this should not be here because its make our app a hole for forbiden access!!
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    token,
-    date: {
-      user: {
-        name: newUser.name,
-        email: newUser.email,
-        role: newUser.role,
-      },
-    },
-  });
+  createSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -57,11 +61,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) if everything ok, send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -185,12 +185,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3) Update changedPasswordAt property for the user
   // 4) Log the user in, send JWT
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -213,10 +208,5 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // User.findByIdAndUpdate will NOT work as intended !
 
   // 4) Log user in, send JWT
-  const token = signToken(user._id);
-
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
