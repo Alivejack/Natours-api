@@ -1,6 +1,6 @@
 const Review = require('../models/reviewModel');
 const catchAsync = require('../utils/catchAsync');
-const { deleteOne, updateOne } = require('./handler');
+const { deleteOne, updateOne, createOne } = require('./handler');
 
 exports.getAllReviews = catchAsync(async (req, res, next) => {
   let filter = {};
@@ -15,23 +15,13 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.createReview = catchAsync(async (req, res, next) => {
-  const { review, rating } = req.body;
-  const user = req.user.id;
-  let tour = '';
-  if (!req.body.tour) {
-    tour = req.params.tourId;
-  } else {
-    tour = req.body.tour;
-  }
+exports.setTourUserIds = (req, res, next) => {
+  // Allow nested routes
+  if (!req.body.tour) req.body.tour = req.params.tourId;
+  if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
 
-  const newReview = await Review.create({ review, rating, user, tour });
-
-  res.status(201).json({
-    status: 'success',
-    newReview,
-  });
-});
-
+exports.createReview = createOne(Review);
 exports.updateReview = updateOne(Review);
 exports.deleteReview = deleteOne(Review);
