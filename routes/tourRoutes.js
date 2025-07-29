@@ -7,9 +7,6 @@ const router = express.Router();
 
 // router.param('id', tourController.checkID);
 
-// GET /tour/23l4kj234/reviews
-// GET /tour/23l4kj234/reviews/1234klj23h4
-
 router.use('/:tourId/reviews', reviewRouter);
 
 router
