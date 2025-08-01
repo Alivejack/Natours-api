@@ -34,6 +34,8 @@ const reviewSchema = new mongoose.Schema(
   },
 );
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   this.select('-__v -createdAt');
   // this.populate({
@@ -49,6 +51,19 @@ reviewSchema.pre(/^find/, function (next) {
     path: 'user',
     select: 'name photo',
   });
+  next();
+});
+
+reviewSchema.pre('save', async function (next) {
+  const existingReview = await this.constructor.findOne({
+    tour: this.tour,
+    user: this.user,
+  });
+
+  if (existingReview) {
+    return next(new Error('You already wrote a review for this tour.'));
+  }
+
   next();
 });
 
