@@ -29,9 +29,7 @@ exports.updateOne = (Model) =>
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      doc,
     });
   });
 
@@ -41,9 +39,7 @@ exports.createOne = (Model) =>
 
     res.status(201).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      doc,
     });
   });
 
@@ -59,9 +55,7 @@ exports.getOne = (Model, popOptions) =>
 
     res.status(200).json({
       status: 'success',
-      data: {
-        data: doc,
-      },
+      doc,
     });
   });
 
@@ -84,8 +78,6 @@ exports.getAll = (Model) =>
     res.status(200).json({
       status: 'success',
       result: doc.length,
-      data: {
-        data: doc,
-      },
+      doc,
     });
   });

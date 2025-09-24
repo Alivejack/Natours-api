@@ -17,7 +17,19 @@ exports.aliasTopTours = (req, res, next) => {
 };
 
 exports.getAllTours = getAll(Tour);
-exports.getTour = getOne(Tour, { path: 'reviews' });
+exports.getTour = catchAsync(async (req, res, next) => {
+  const doc = await Tour.findOne({ slug: req.params.id }).populate('reviews');
+
+  if (!doc) {
+    return next(new AppError('No document found with that name!', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    doc,
+  });
+});
+
 exports.createTour = createOne(Tour);
 exports.updateTour = updateOne(Tour);
 exports.deleteTour = deleteOne(Tour);

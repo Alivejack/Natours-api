@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -26,7 +28,7 @@ if (process.env.NODE_ENV === 'development') {
 // Limit requests from same API
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 30,
+  max: 100,
   message: 'too many login attempts, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -35,6 +37,7 @@ app.use('/api', limiter);
 
 // Body parser, reading data form body in to req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
@@ -56,12 +59,20 @@ app.use(
   }),
 );
 
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+    credentials: true,
+  }),
+);
+
 // Serving static files
 // app.use(express.static(`${__dirname}/dev-data`));
 
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
+  // console.log(req.cookies);
   next();
 });
 
