@@ -219,7 +219,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   const { password, newPassword, newPasswordConfirm } = req.body;
   const user = await User.findById(req.user.id).select('+password');
   if (!user) {
-    return next(new AppError('you are not loged in !'));
+    return next(new AppError('you are not loged in !', 401));
   }
 
   // 2) Check if Posted currnet password is correct
