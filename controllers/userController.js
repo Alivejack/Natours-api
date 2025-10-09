@@ -107,6 +107,35 @@ exports.createUser = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.searchUser = catchAsync(async (req, res, next) => {
+  const { name } = req.query;
+
+  if (!name) {
+    return next(new AppError('Please provide a name!', 400));
+  }
+
+  const users = await User.find({
+    name: {
+      $regex: name,
+      $options: 'i',
+    },
+  });
+
+  if (!users) {
+    return next(new AppError('No users found!', 404));
+  }
+
+  if (users.length === 0) {
+    return next(new AppError('No users found!', 404));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    result: users.length,
+    users,
+  });
+});
+
 exports.getAllUsers = getAll(User);
 exports.getUser = getOne(User);
 // Do NOT update passwords with this !

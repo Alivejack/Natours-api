@@ -40,6 +40,8 @@ router
   .get(userController.getAllUsers)
   .post(userController.createUser);
 
+router.get('/search', userController.searchUser);
+
 router
   .route('/:id')
   .get(userController.getUser)
