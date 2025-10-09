@@ -108,22 +108,25 @@ exports.createUser = catchAsync(async (req, res, next) => {
 });
 
 exports.searchUser = catchAsync(async (req, res, next) => {
-  const { name } = req.query;
+  const { name, role } = req.query;
+  const query = {};
 
-  if (!name) {
-    return next(new AppError('Please provide a name!', 400));
+  if (!name && !role) {
+    return next(new AppError('Please provide name or role', 400));
   }
 
-  const users = await User.find({
-    name: {
+  if (name) {
+    query.name = {
       $regex: name,
       $options: 'i',
-    },
-  });
-
-  if (!users) {
-    return next(new AppError('No users found!', 404));
+    };
   }
+
+  if (role) {
+    query.role = role;
+  }
+
+  const users = await User.find(query);
 
   if (users.length === 0) {
     return next(new AppError('No users found!', 404));
